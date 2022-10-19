@@ -1,14 +1,23 @@
-import { Image, Text, View, StyleSheet, ScrollView } from "react-native";
+import {
+  Image,
+  Text,
+  View,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+} from "react-native";
 import React, { Component } from "react";
 import { getComic } from "../Constants/Consultas";
 import { styleHome } from "../Constants/Styles";
+import { Entypo } from "@expo/vector-icons";
 
 export default class Home extends Component {
   constructor(props) {
     super(props);
     this.state = {
       Comic: [],
-      transcript: "",
+      trans: "",
+      More: true,
     };
   }
   componentDidMount() {
@@ -16,17 +25,23 @@ export default class Home extends Component {
   }
 
   async get() {
-    let x = await getComic(542);
+    let x = await getComic(262);
     this.setState({ Comic: x });
     console.log(this.state.Comic);
     this.transcript();
   }
 
   transcript() {
-    let x = this.state.Comic.transcript.split("[[");
-    console.log()
-    const regex  = /\[\[|\]\]|{.*}/gi
-    this.setState({transcript:this.state.Comic.transcript.replace(regex, "")});
+    const regex = /\[\[|\]\]|{.*}/gi;
+    if (this.state.Comic.transcrip != "") {
+      this.setState({
+        trans: this.state.Comic.transcript.replace(regex, ""),
+      });
+    } else {
+      this.setState({
+        trans: "",
+      });
+    }
   }
   render() {
     return (
@@ -34,15 +49,46 @@ export default class Home extends Component {
         <View style={styles.container}>
           <Text style={styleHome.titulo}>{this.state.Comic.title}</Text>
           <Image style={styleHome.img} source={{ uri: this.state.Comic.img }} />
-          { this.state.Comic.transcript != "" || transcript != "" ?
-            (
+
+          <View>
+            <Text style={styleHome.titulo}>Information</Text>
+            <Text style={styleHome.alt}>{this.state.Comic.alt}</Text>
+          </View>
+
+          {/* data del comic*/}
+          <View style={styleHome.ViewData}>
+            <Text style={styleHome.titulo}>Data</Text>
+
+            <TouchableOpacity
+              style={styleHome.boton}
+              onPress={() => this.setState({ More: !this.state.More })}
+            >
+              {this.state.More ? (
+                <Entypo name="chevron-small-up" size={24} color="black" />
+              ) : (
+                <Entypo name="chevron-down" size={24} color="black" />
+              )}
+            </TouchableOpacity>
+          </View>
+
+          {this.state.More ? (
+            <View>
+              <Text style={styleHome.alt}>Number: {this.state.Comic.num}</Text>
+              <Text style={styleHome.alt}>
+                Date: {this.state.Comic.day}/{this.state.Comic.month}/
+                {this.state.Comic.year}
+              </Text>
+            </View>
+          ) : (
+            <Text style={styles.Texto}>{this.state.More}</Text>
+          )}
+
+          {this.state.trans != "" ? (
             <View>
               <Text style={styleHome.titulo}>Transcripcion</Text>
-              <Text>{this.state.transcript}</Text> 
+              <Text style={styleHome.transcrip}>nnn{this.state.trans}</Text>
             </View>
-            )
-          :null
-          }
+          ) : null}
         </View>
       </ScrollView>
     );
