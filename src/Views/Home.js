@@ -10,6 +10,8 @@ import React, { Component } from "react";
 import { getComic } from "../Constants/Consultas";
 import { styleHome } from "../Constants/Styles";
 import { Entypo } from "@expo/vector-icons";
+import OpenLink from "../Components/OpenLink";
+import DoubleClick from "react-native-double-tap";
 
 export default class Home extends Component {
   constructor(props) {
@@ -25,7 +27,7 @@ export default class Home extends Component {
   }
 
   async get() {
-    let x = await getComic(262);
+    let x = await getComic(2500);
     this.setState({ Comic: x });
     console.log(this.state.Comic);
     this.transcript();
@@ -47,9 +49,21 @@ export default class Home extends Component {
     return (
       <ScrollView>
         <View style={styles.container}>
-          <Text style={styleHome.titulo}>{this.state.Comic.title}</Text>
-          <Image style={styleHome.img} source={{ uri: this.state.Comic.img }} />
-
+          <DoubleClick
+            singleTap={() => {
+              console.log("single tap");
+            }}
+            doubleTap={() => {
+              console.log("double tap");
+            }}
+            delay={200}
+          >
+            <Text style={styleHome.titulo}>{this.state.Comic.title}</Text>
+            <Image
+              style={styleHome.img}
+              source={{ uri: this.state.Comic.img }}
+            />
+          </DoubleClick>
           <View>
             <Text style={styleHome.titulo}>Information</Text>
             <Text style={styleHome.alt}>{this.state.Comic.alt}</Text>
@@ -78,6 +92,9 @@ export default class Home extends Component {
                 Date: {this.state.Comic.day}/{this.state.Comic.month}/
                 {this.state.Comic.year}
               </Text>
+              {this.state.Comic.link != "" ? (
+                <OpenLink url={this.state.Comic.link} />
+              ) : null}
             </View>
           ) : (
             <Text style={styles.Texto}>{this.state.More}</Text>
