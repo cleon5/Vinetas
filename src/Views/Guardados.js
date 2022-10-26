@@ -7,14 +7,9 @@ import {
   TouchableOpacity,
 } from "react-native";
 import React, { Component } from "react";
-import { getComic } from "../Constants/Consultas";
-import { styleHome } from "../Constants/Styles";
-import { Entypo } from "@expo/vector-icons";
-import OpenLink from "../Components/OpenLink";
-import DoubleClick from "react-native-double-tap";
-import {getDataJson, storeDataJson} from "../Constants/Guarda";
+import { getDataJson, storeDataJson } from "../Constants/Guarda";
 
-export default class Pruba extends Component {
+export default class Guardados extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -30,10 +25,10 @@ export default class Pruba extends Component {
 
   async Cargar() {
     let x = await getDataJson("FavComic");
-    this.setState({Comic:x})
-    console.log(x)
+    this.setState({ Comic: x });
+    console.log(x);
     if (Array.isArray(x))
-      x.includes(this.state.Comic.num)//Editar id
+      x.includes(this.state.Comic.num) //Editar id
         ? this.setState({ Guardar: true })
         : this.setState({ Guardar: false });
     else
@@ -44,11 +39,11 @@ export default class Pruba extends Component {
   render() {
     return (
       <View>
-        <TouchableOpacity onPress={()=>this.Cargar()} >
-          <Text>Pruba</Text>
-          </TouchableOpacity>
+        <TouchableOpacity onPress={() => this.Cargar()}>
+          <Text>Guardados</Text>
+        </TouchableOpacity>
         <Text>{this.state.Comic}</Text>
       </View>
-    )
+    );
   }
 }

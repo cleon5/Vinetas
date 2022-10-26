@@ -53,7 +53,7 @@ export default class Home extends Component {
 
   async Cargar() {
     let x = await getDataJson("FavComic");
-    console.log(x)
+    console.log("x"+x)
     if (Array.isArray(x))
       x.includes(this.state.Comic.num)//Editar id
         ? this.setState({ Guardar: true })
@@ -86,13 +86,13 @@ export default class Home extends Component {
   render() {
     return (
       <ScrollView>
-        <View style={{flex:1}}>
+        <View style={{flex:1}}> 
           <DoubleClick
             singleTap={() => {
               console.log("single tap");
             }}
             doubleTap={() => {
-              this.Guardar("FavGames", this.state.Comic.num);
+              this.Guardar("FavComic", this.state.Comic.num);
               console.log("double tap");
             }}
             delay={200}

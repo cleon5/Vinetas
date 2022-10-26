@@ -1,5 +1,4 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-//import React, { useState, useEffect } from "react";
 
 export const storeData = async (name, data) => {
   try {

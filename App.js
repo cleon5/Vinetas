@@ -6,6 +6,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import Pruba from "./src/Views/Pruba";
 import Home from "./src/Views/Home";
+import Guardados from "./src/Views/Guardados";
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -15,7 +16,7 @@ export default function App() {
     return (
       <Drawer.Navigator useLegacyImplementation>
         <Drawer.Screen name="Home" component={Home} />
-        <Drawer.Screen name="Article" component={Pruba} />
+        <Drawer.Screen name="Article" component={Guardados} />
       </Drawer.Navigator>
     );
   }
