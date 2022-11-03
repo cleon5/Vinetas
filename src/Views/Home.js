@@ -5,14 +5,15 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
+  Button,
 } from "react-native";
 import React, { Component } from "react";
-import { getComic } from "../Constants/Consultas";
+import { getComic, getRandom } from "../Constants/Consultas";
 import { styleHome } from "../Constants/Styles";
-import { Entypo } from "@expo/vector-icons";
+import { Entypo, AntDesign, FontAwesome5 } from "@expo/vector-icons";
 import OpenLink from "../Components/OpenLink";
 import DoubleClick from "react-native-double-tap";
-import {getDataJson, storeDataJson} from "../Constants/Guarda";
+import { getDataJson, storeDataJson } from "../Constants/Guarda";
 
 export default class Home extends Component {
   constructor(props) {
@@ -24,51 +25,81 @@ export default class Home extends Component {
       Guardar: false,
     };
   }
+
+  componentDidUpdate(prevProps, prevState) {
+    //console.log(prevProps.navigation.params)
+    if( prevProps.route.params.itemId !== this.props.route.params.itemId )
+      this.get(this.props.route.params.itemId)
+  } 
+
+
   componentDidMount() {
-    this.get();
+    console.log(this.props);
+    //this.get();
+    this.getRamdom();
     this.Cargar();
   }
 
+  Concat(arr) {
+    return arr.reduce((acc, val) => {
+      Array.isArray(val) ? acc.concat(this.Concat(val)) : acc.concat(val), [];
+    });
+  }
+  async getRamdom() {
+    let comic = await getRandom();
+    this.setState({ Comic: comic });
+    console.log(this.state.Comic);
+    this.transcript();
+  }
+
   async Guardar(name, data) {
+    console.log(this.props.route.params.itemId);
+
+    console.log(this.state.Guardar);
     let get = [];
     let x = [];
     x = await getDataJson("FavComic");
-    console.log(x);
-    if (x == null) {
-      await storeDataJson(name, data);
-    } else {
-      get.push(data);
-      if (Array.isArray(x)) {
-        if (x.includes(data)) {
-          get = x;
-          get.splice(x.indexOf(data), 1);
-          console.log(x.indexOf(data));
-        } else x.map((a) => get.push(a));
-      } else x != get ? get.push(x) : (get = null);
-      console.log(get);
+    if (this.state.Guardar) {
+      x.map((c) => {
+        console.log("a " + c);
+        if (c[0] != data[0]) {
+          get.push(c);
+          console.log("push");
+        } else {
+          console.log("no push");
+        }
+      });
       await storeDataJson(name, get);
+    } else {
+      if (x == null || x.length == 0) {
+        await storeDataJson(name, [data]);
+      } else {
+        x.push(data);
+        await storeDataJson(name, x);
+      }
     }
     this.setState({ Guardar: !this.state.Guardar });
   }
 
-  async Cargar() {
+  async Cargar() { 
+    console.log(this.props);
     let x = await getDataJson("FavComic");
-    console.log("x"+x)
-    if (Array.isArray(x))
-      x.includes(this.state.Comic.num)//Editar id
-        ? this.setState({ Guardar: true })
-        : this.setState({ Guardar: false });
-    else
-      x == this.state.Comic.num && x != null
-        ? this.setState({ Guardar: true })
-        : this.setState({ Guardar: false });
+    if (x != null) {
+      x.map((c) => {
+        console.log(c);
+        c[0] == this.state.Comic.num
+          ? this.setState({ Guardar: true })
+          : this.setState({ Guardar: false });
+      });
+    }
   }
-  async get() {
-    let x = await getComic(2500);
+  async get(n) {
+    let x = await getComic(n);
     this.setState({ Comic: x });
     console.log(this.state.Comic);
     this.transcript();
   }
+
 
   transcript() {
     const regex = /\[\[|\]\]|{.*}/gi;
@@ -86,32 +117,61 @@ export default class Home extends Component {
   render() {
     return (
       <ScrollView>
-        <View style={{flex:1}}> 
+        <View style={{ flex: 1 }}>
           <DoubleClick
             singleTap={() => {
               console.log("single tap");
+              this.Cargar();
             }}
             doubleTap={() => {
-              this.Guardar("FavComic", this.state.Comic.num);
+              this.Guardar("FavComic", [
+                this.state.Comic.num,
+                this.state.Comic.title,
+              ]);
               console.log("double tap");
             }}
             delay={200}
-          >
-            <Text style={styleHome.titulo}>{this.state.Comic.title}</Text>
-            <Text style={styleHome.titulo}>{this.state.Guardar} "am"</Text>
+          ></DoubleClick>
 
-            <Image
-              style={styleHome.img}
-              source={{ uri: this.state.Comic.img }}
-            />
-          </DoubleClick>
+          <View style={styleHome.tituloView}>
+            <TouchableOpacity
+              style={styleHome.icono}
+              onPress={() => {
+                this.Guardar("FavComic", [
+                  this.state.Comic.num,
+                  this.state.Comic.title,
+                ]);
+              }}
+            >
+              {this.state.Guardar ? (
+                <AntDesign name="heart" size={30} color="red" />
+              ) : (
+                <AntDesign name="hearto" size={30} color="red" />
+              )}
+            </TouchableOpacity>
+            <Text style={styleHome.titulo}>{this.state.Comic.title}</Text>
+
+            <TouchableOpacity
+              style={styleHome.icono}
+              onPress={() => this.getRamdom()}
+            >
+              <FontAwesome5 name="random" size={30} color="black" />
+            </TouchableOpacity>
+          </View>
+
+          <Image style={styleHome.img} source={{ uri: this.state.Comic.img }} />
 
           <View>
             <Text style={styleHome.titulo}>Information</Text>
             <Text style={styleHome.alt}>{this.state.Comic.alt}</Text>
-          </View>
+          </View> 
+{/*
+          <Button
+            title="Go to Details... again"
+            onPress={() => this.props.navigation.navigate("Guardados")}
+          ></Button>
 
-          {/* data del comic*/}
+           data del comic*/}
           <View style={styleHome.ViewData}>
             <Text style={styleHome.titulo}>Data</Text>
 
@@ -145,9 +205,16 @@ export default class Home extends Component {
           {this.state.trans != "" ? (
             <View>
               <Text style={styleHome.titulo}>Transcripcion</Text>
-              <Text style={styleHome.transcrip}>nnn{this.state.trans}</Text>
+              <Text style={styleHome.transcrip}>{this.state.trans}</Text>
             </View>
           ) : null}
+
+<TouchableOpacity
+              style={styleHome.icono}
+              onPress={() => this.getRamdom()}
+            >
+              <FontAwesome5 name="random" size={40} color="black" />
+            </TouchableOpacity>
         </View>
       </ScrollView>
     );

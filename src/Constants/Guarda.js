@@ -39,3 +39,13 @@ export const getDataJson = async (name) => {
     console.log(e);
   }
 }
+export const clearDataJson = async () => {
+  try {
+    await AsyncStorage.clear()
+    .then(()=>{
+      console.log("Todo borrado")
+    })
+  } catch(e) {
+    console.log(e);
+  }
+}

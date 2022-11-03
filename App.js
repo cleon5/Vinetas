@@ -16,7 +16,7 @@ export default function App() {
     return (
       <Drawer.Navigator useLegacyImplementation>
         <Drawer.Screen name="Home" component={Home} />
-        <Drawer.Screen name="Article" component={Guardados} />
+        <Drawer.Screen name="Guardados" component={Guardados} />
       </Drawer.Navigator>
     );
   }

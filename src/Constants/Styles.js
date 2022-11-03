@@ -33,4 +33,25 @@ export const styleHome = StyleSheet.create({
     flexDirection:"row",
     alignSelf:"center"
   },
+  tituloView:{
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    alignContent: 'space-between',
+    flexDirection:"row",
+
+  },
+  icono: {
+    borderRadius: 10,
+    padding :1,
+    alignItems:"center",
+    margin: 10,
+  },
+  guardado:{
+    paddingVertical: 8,
+    fontSize: 24,
+    marginHorizontal:10,
+    padding:10,
+    borderColor:"black",
+    borderWidth:1,
+  }
 });

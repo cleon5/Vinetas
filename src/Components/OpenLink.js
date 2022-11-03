@@ -1,7 +1,8 @@
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, Linking } from "react-native";
 import React, { useCallback } from "react";
 
 const OpenLink = ({ url }) => {
+  console.log(url)
   const handlePress = useCallback(async () => {
     const supported = await Linking.canOpenURL(url);
 
