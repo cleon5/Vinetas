@@ -53,5 +53,12 @@ export const styleHome = StyleSheet.create({
     padding:10,
     borderColor:"black",
     borderWidth:1,
+  },
+  borrar:{
+    justifyContent:"center",
+    borderRadius: 10,
+    padding :1,
+    alignItems:"center",
+    margin: 10,
   }
 });

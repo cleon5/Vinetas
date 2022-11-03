@@ -10,6 +10,8 @@ import {
 import React, { Component } from "react";
 import { getDataJson, storeDataJson, clearDataJson } from "../Constants/Guarda";
 import { styleHome } from "../Constants/Styles";
+import { AntDesign } from "@expo/vector-icons";
+import Home from "./Home";
 
 export default class Guardados extends Component {
   constructor(props) {
@@ -41,9 +43,7 @@ export default class Guardados extends Component {
         : this.setState({ Guardar: false });
     console.log(this.state.Comic);
   }
-  async Delete() {
-    clearDataJson();
-  }
+
   MostrarGuardados() {
     return this.state.Comic.map((item, i) => {
       return (
@@ -65,19 +65,32 @@ export default class Guardados extends Component {
   render() {
     return (
       <View>
-        <Text style={styleHome.titulo}>Guardados</Text>
-        {this.MostrarGuardados()}
+        <View style={styleHome.tituloView}>
+          <TouchableOpacity onPress={() => this.Cargar()}>
+            <AntDesign
+              style={styleHome.borrar}
+              name="reload1"
+              size={40}
+              color="black"
+            />
+          </TouchableOpacity>
 
-        <View>
-          <TouchableOpacity
-            onPress={() =>
-              this.props.navigation.navigate("Home", {
-                itemId: 2222,
-              })
-            }
-          >
+          <Text style={styleHome.titulo}>Guardados</Text>
+          <TouchableOpacity onPress={() => clearDataJson()}>
+            <AntDesign
+              style={styleHome.borrar}
+              name="delete"
+              size={40}
+              color="black"
+            />
           </TouchableOpacity>
         </View>
+
+        {this.state.Comic != null ? (
+          this.MostrarGuardados()
+        ) : (
+          <Text style={styleHome.titulo}>Nada Guardado</Text>
+        )}
       </View>
     );
   }

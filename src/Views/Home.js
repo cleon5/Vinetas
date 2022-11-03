@@ -27,15 +27,17 @@ export default class Home extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    //console.log(prevProps.navigation.params)
-    if( prevProps.route.params.itemId !== this.props.route.params.itemId )
-      this.get(this.props.route.params.itemId)
-  } 
-
+    if (
+      prevProps.route.params != undefined &&
+      prevProps.route.params.itemId != this.props.route.params.itemId
+    ) {
+      this.get(this.props.route.params.itemId);
+      this.Cargar();
+    }
+  }
 
   componentDidMount() {
     console.log(this.props);
-    //this.get();
     this.getRamdom();
     this.Cargar();
   }
@@ -50,12 +52,10 @@ export default class Home extends Component {
     this.setState({ Comic: comic });
     console.log(this.state.Comic);
     this.transcript();
+    this.Cargar();
   }
 
   async Guardar(name, data) {
-    console.log(this.props.route.params.itemId);
-
-    console.log(this.state.Guardar);
     let get = [];
     let x = [];
     x = await getDataJson("FavComic");
@@ -81,12 +81,12 @@ export default class Home extends Component {
     this.setState({ Guardar: !this.state.Guardar });
   }
 
-  async Cargar() { 
+  async Cargar() {
     console.log(this.props);
+    console.log(this.state.Comic.num);
     let x = await getDataJson("FavComic");
     if (x != null) {
       x.map((c) => {
-        console.log(c);
         c[0] == this.state.Comic.num
           ? this.setState({ Guardar: true })
           : this.setState({ Guardar: false });
@@ -98,8 +98,8 @@ export default class Home extends Component {
     this.setState({ Comic: x });
     console.log(this.state.Comic);
     this.transcript();
+    this.Cargar();
   }
-
 
   transcript() {
     const regex = /\[\[|\]\]|{.*}/gi;
@@ -164,8 +164,8 @@ export default class Home extends Component {
           <View>
             <Text style={styleHome.titulo}>Information</Text>
             <Text style={styleHome.alt}>{this.state.Comic.alt}</Text>
-          </View> 
-{/*
+          </View>
+          {/*
           <Button
             title="Go to Details... again"
             onPress={() => this.props.navigation.navigate("Guardados")}
@@ -199,7 +199,7 @@ export default class Home extends Component {
               ) : null}
             </View>
           ) : (
-            <Text style={styles.Texto}>{this.state.More}</Text>
+            <Text>{this.state.More}</Text>
           )}
 
           {this.state.trans != "" ? (
@@ -209,12 +209,12 @@ export default class Home extends Component {
             </View>
           ) : null}
 
-<TouchableOpacity
-              style={styleHome.icono}
-              onPress={() => this.getRamdom()}
-            >
-              <FontAwesome5 name="random" size={40} color="black" />
-            </TouchableOpacity>
+          <TouchableOpacity
+            style={styleHome.icono}
+            onPress={() => this.getRamdom()}
+          >
+            <FontAwesome5 name="random" size={40} color="black" />
+          </TouchableOpacity>
         </View>
       </ScrollView>
     );
